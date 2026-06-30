@@ -47,79 +47,81 @@ const Tab1: React.FC = () => {
   /* =========================
      PATCH (UPDATE)
   ========================= */
-  const handleEdit = async (repo: Repository) => {
-    presentAlert({
-      header: "Editar repositorio",
-      inputs: [
-        {
-          name: "name",
-          type: "text",
-          placeholder: "Nombre",
-          value: repo.name,
-        },
-        {
-          name: "description",
-          type: "text",
-          placeholder: "Descripción",
-          value: repo.description,
-        },
-      ],
-      buttons: [
-        "Cancelar",
-        {
-          text: "Actualizar",
-          handler: async (data) => {
-            try {
-              const [owner, repoName] = repo.name.split("/");
+ const handleEdit = async (repo: Repository) => {
+  presentAlert({
+    header: "Editar repositorio",
+    inputs: [
+      {
+        name: "name",
+        type: "text",
+        placeholder: "Nombre",
+        value: repo.name,
+      },
+      {
+        name: "description",
+        type: "text",
+        placeholder: "Descripción",
+        value: repo.description,
+      },
+    ],
+    buttons: [
+      "Cancelar",
+      {
+        text: "Actualizar",
+        handler: async (data) => {
+          try {
+            const owner = (repo as any)._owner;
 
-              const updated = await updateRepository(owner, repoName, {
-                name: data.name,
-                description: data.description,
-              });
+            const updated = await updateRepository(owner, repo.name, {
+              name: data.name,
+              description: data.description,
+            });
 
-              setRepositoryList((prev) =>
-                prev.map((r) =>
-                  r.name === repo.name ? updated : r
-                )
-              );
-            } catch (error) {
-              console.error("Error actualizando repo:", error);
-            }
-          },
+            setRepositoryList((prev) =>
+              prev.map((r) =>
+                r.name === repo.name ? updated : r
+              )
+            );
+
+          } catch (error) {
+            console.error("Error actualizando repo:", error);
+          }
         },
-      ],
-    });
-  };
+      },
+    ],
+  });
+};
 
   /* =========================
      DELETE
   ========================= */
-  const handleDelete = async (repo: Repository) => {
-    presentAlert({
-      header: "Eliminar repositorio",
-      message: `¿Seguro que quieres eliminar ${repo.name}?`,
-      buttons: [
-        "Cancelar",
-        {
-          text: "Eliminar",
-          role: "destructive",
-          handler: async () => {
-            try {
-              const [owner, repoName] = repo.name.split("/");
+const handleDelete = async (repo: Repository) => {
+  presentAlert({
+    header: "Eliminar repositorio",
+    message: `¿Seguro que quieres eliminar ${repo.name}?`,
+    buttons: [
+      "Cancelar",
+      {
+        text: "Eliminar",
+        role: "destructive",
+        handler: async () => {
+          try {
+            const owner = (repo as any)._owner;
 
-              await deleteRepository(owner, repoName);
+            await deleteRepository(owner, repo.name);
 
-              setRepositoryList((prev) =>
-                prev.filter((r) => r.name !== repo.name)
-              );
-            } catch (error) {
-              console.error("Error eliminando repo:", error);
-            }
-          },
+            setRepositoryList((prev) =>
+              prev.filter((r) => r.name !== repo.name)
+            );
+
+          } catch (error) {
+            console.error("Error eliminando repo:", error);
+          }
         },
-      ],
-    });
-  };
+      },
+    ],
+  });
+};
 
   return (
     <IonPage>
