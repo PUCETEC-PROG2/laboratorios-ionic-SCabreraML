@@ -5,7 +5,7 @@ import { RepositoryPayload } from "../interfaces/RepositoryPayload";
 
 const GITHUB_API_URL = "https://api.github.com/user/repos";
 const GITHUB_USER_URL = "https://api.github.com/user";
-const GITHUB_API_TOKEN = "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";
+const GITHUB_API_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 const apiClient = axios.create({
   baseURL: "https://api.github.com",
