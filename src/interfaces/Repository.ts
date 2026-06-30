@@ -3,6 +3,7 @@ export interface Repository {
   description: string;
   language: string;
   avatarUrl: string;
+  
 }
 
 // Creación del arreglo con instancias de ejemplo

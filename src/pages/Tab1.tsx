@@ -8,7 +8,6 @@ import {
   IonToolbar,
   useIonViewWillEnter,
   useIonAlert,
-  useIonViewDidEnter
 } from "@ionic/react";
 
 import "./Tab1.css";
@@ -83,17 +82,27 @@ const Tab1: React.FC = () => {
           text: "Actualizar",
           handler: async (data) => {
             try {
-              const owner = (repo as any)._owner;
+              // CORRECCIÓN: Extraemos el string 'login' desde el objeto _owner
+              const ownerName = (repo as any)._owner?.login;
 
-              const updated = await updateRepository(owner, repo.name, {
+              if (!ownerName) {
+                console.error("No se pudo obtener el nombre del propietario");
+                return;
+              }
+
+              const updated = await updateRepository(ownerName, repo.name, {
                 name: data.name,
                 description: data.description,
               });
 
+              // Conservamos la referencia de _owner para que no se rompan futuras ediciones/borrados
+              const updatedWithMetadata = {
+                ...updated,
+                _owner: (repo as any)._owner,
+              };
+
               setRepositoryList((prev) =>
-                prev.map((r) =>
-                  r.name === repo.name ? updated : r
-                )
+                prev.map((r) => (r.name === repo.name ? updatedWithMetadata : r))
               );
             } catch (error) {
               console.error("Error actualizando repo:", error);
@@ -118,9 +127,15 @@ const Tab1: React.FC = () => {
           role: "destructive",
           handler: async () => {
             try {
-              const owner = (repo as any)._owner;
+              // CORRECCIÓN: Extraemos el string 'login' desde el objeto _owner
+              const ownerName = (repo as any)._owner?.login;
 
-              await deleteRepository(owner, repo.name);
+              if (!ownerName) {
+                console.error("No se pudo obtener el nombre del propietario");
+                return;
+              }
+
+              await deleteRepository(ownerName, repo.name);
 
               setRepositoryList((prev) =>
                 prev.filter((r) => r.name !== repo.name)

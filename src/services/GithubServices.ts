@@ -3,8 +3,6 @@ import { Repository } from "../interfaces/Repository";
 import { GithubUser } from "../interfaces/GithubUser";
 import { RepositoryPayload } from "../interfaces/RepositoryPayload";
 
-const GITHUB_API_URL = "https://api.github.com/user/repos";
-const GITHUB_USER_URL = "https://api.github.com/user";
 const GITHUB_API_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 const apiClient = axios.create({
@@ -35,14 +33,14 @@ export const fetchRepositories = async (): Promise<Repository[]> => {
       description: repo.description ?? "Sin descripción",
       language: repo.language ?? "No especificado",
       avatarUrl: repo.owner.avatar_url,
-      _owner: repo.owner
+      _owner: repo.owner // Retorna el objeto completo del owner de GitHub
     }));
   } catch (error) {
     console.error("GitHub API Error (repos):", error);
     throw new Error("Error al obtener repositorios");
   }
 };
-/**REPOSItorio crear */
+
 export const createRepository = async (
   repository: RepositoryPayload
 ): Promise<Repository | null> => {
@@ -59,6 +57,7 @@ export const createRepository = async (
       avatarUrl: response.data.owner.avatar_url,
     };
   } catch (error) {
+    console.error("GitHub API Error (create repo):", error);
     throw new Error("Error al crear repositorio");
   }
 };
@@ -84,6 +83,10 @@ export const fetchUserInfo = async (): Promise<GithubUser> => {
   }
 };
 
+/* =========================
+   ACTUALIZAR Y ELIMINAR
+========================= */
+
 export const updateRepository = async (
   owner: string,
   repo: string,
@@ -106,7 +109,6 @@ export const updateRepository = async (
     throw new Error("Error al actualizar el repositorio");
   }
 };
-
 
 export const deleteRepository = async (
   owner: string,
