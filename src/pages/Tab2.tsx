@@ -35,6 +35,9 @@ const Tab2: React.FC = () => {
         description,
       });
 
+
+      window.dispatchEvent(new Event("repo-created"));
+
       setToast({
         show: true,
         message: "Repositorio creado correctamente",
