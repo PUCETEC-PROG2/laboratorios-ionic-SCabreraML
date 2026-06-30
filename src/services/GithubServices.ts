@@ -5,7 +5,7 @@ import { RepositoryPayload } from "../interfaces/RepositoryPayload";
 
 const GITHUB_API_URL = "https://api.github.com/user/repos";
 const GITHUB_USER_URL = "https://api.github.com/user";
-const GITHUB_API_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
+const GITHUB_API_TOKEN = "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";
 
 const apiClient = axios.create({
   baseURL: "https://api.github.com",
@@ -35,7 +35,7 @@ export const fetchRepositories = async (): Promise<Repository[]> => {
       description: repo.description ?? "Sin descripción",
       language: repo.language ?? "No especificado",
       avatarUrl: repo.owner.avatar_url,
-      _owner: repo.owner.login,
+      _owner: repo.owner
     }));
   } catch (error) {
     console.error("GitHub API Error (repos):", error);

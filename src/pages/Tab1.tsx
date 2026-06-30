@@ -45,11 +45,6 @@ const Tab1: React.FC = () => {
     loadRepositories();
   });
 
-  useIonViewDidEnter(() => {
-  loadRepositories();
-});
-
-  // 🔥 LISTENER GLOBAL
   useEffect(() => {
     const handler = () => {
       loadRepositories();
