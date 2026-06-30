@@ -82,3 +82,39 @@ export const fetchUserInfo = async (): Promise<GithubUser> => {
     throw new Error("Error al obtener información del usuario");
   }
 };
+
+export const updateRepository = async (
+  owner: string,
+  repo: string,
+  repository: RepositoryPayload
+): Promise<Repository> => {
+  try {
+    const response = await apiClient.patch(`/repos/${owner}/${repo}`, {
+      name: repository.name,
+      description: repository.description,
+    });
+
+    return {
+      name: response.data.name,
+      description: response.data.description ?? "Sin descripción",
+      language: response.data.language ?? "No especificado",
+      avatarUrl: response.data.owner.avatar_url,
+    };
+  } catch (error) {
+    console.error("GitHub API Error (update repo):", error);
+    throw new Error("Error al actualizar el repositorio");
+  }
+};
+
+
+export const deleteRepository = async (
+  owner: string,
+  repo: string
+): Promise<void> => {
+  try {
+    await apiClient.delete(`/repos/${owner}/${repo}`);
+  } catch (error) {
+    console.error("GitHub API Error (delete repo):", error);
+    throw new Error("Error al eliminar el repositorio");
+  }
+};
